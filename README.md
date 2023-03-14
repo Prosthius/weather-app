@@ -1,3 +1,7 @@
+# Material UI
+## [Svelte Material UI](https://sveltematerialui.com/) <br>
+After installing new material packages run ``npm run prepare`` to build the CSS file then ``npm run dev`` to build and run the project
+
 # create-svelte
 
 Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
