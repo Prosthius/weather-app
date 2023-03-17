@@ -12,10 +12,12 @@
 	let cityNameSaved: string;
 	let getLocation: any;
 	let currentWeatherName: string;
+	let currentWeather: any;
 
 	function updateLocation() {
 		cityNameSaved = cityNameInput;
-        cityNameInput = '';
+		currentWeather = '';
+		cityNameInput = '';
 		getLocation(cityNameSaved);
 	}
 
@@ -27,17 +29,17 @@
 
 <div class="container" style="padding: 0px;">
 	<LayoutGrid>
-		{#if currentWeatherName}
+		<!-- {#if currentWeatherName}
 			<Cell class="align-left centre">
 				<h3 class="shadow-text">{currentWeatherName}</h3>
 			</Cell>
 		{:else}
 			<Cell class="align-left centre">
 				<CircularProgress style="height: 75px; width: 75px" indeterminate />
-				<h3>&zwj</h3>
-			</Cell>
-		{/if}
-		<Cell class="centre">
+				<h3>&zwj</h3> <!-- A zero width unicode character to maintain consistent sizing -->
+			<!-- </Cell>
+		{/if} -->
+		<Cell span={12} class="centre">
 			<Paper class="solo-paper" elevation={6}>
 				<Icon class="material-icons">search</Icon>
 				<Input
@@ -54,7 +56,7 @@
 	</LayoutGrid>
 </div>
 
-<CurrentWeather bind:getLocation bind:currentWeatherName {cityNameSaved} />
+<CurrentWeather bind:getLocation bind:currentWeatherName bind:currentWeather />
 
 <style>
 	.container {
@@ -89,8 +91,5 @@
 	* :global(.align-left) {
 		display: flex;
 		justify-content: flex-start;
-	}
-	.shadow-text {
-		text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.274);
 	}
 </style>
