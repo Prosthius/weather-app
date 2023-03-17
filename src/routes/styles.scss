@@ -98,3 +98,13 @@ strong {
     display: flex;
     align-items: flex-start;
 }
+
+.align-left {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.align-right {
+    display: flex;
+    justify-content: flex-end;
+}
