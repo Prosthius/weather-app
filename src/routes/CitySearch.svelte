@@ -6,12 +6,11 @@
 	import LayoutGrid from '@smui/layout-grid/src/LayoutGrid.svelte';
 	import Cell from '@smui/layout-grid/src/Cell.svelte';
 	import Fab from '@smui/fab/src/Fab.svelte';
-	import CircularProgress from '@smui/circular-progress';
+	import Outlook from './Outlook.svelte';
 
 	let cityNameInput: string;
 	let cityNameSaved: string;
 	let getLocation: any;
-	let currentWeatherName: string;
 	let currentWeather: any;
 
 	function updateLocation() {
@@ -29,16 +28,6 @@
 
 <div class="container" style="padding: 0px;">
 	<LayoutGrid>
-		<!-- {#if currentWeatherName}
-			<Cell class="align-left centre">
-				<h3 class="shadow-text">{currentWeatherName}</h3>
-			</Cell>
-		{:else}
-			<Cell class="align-left centre">
-				<CircularProgress style="height: 75px; width: 75px" indeterminate />
-				<h3>&zwj</h3> <!-- A zero width unicode character to maintain consistent sizing -->
-			<!-- </Cell>
-		{/if} -->
 		<Cell span={12} class="centre">
 			<Paper class="solo-paper" elevation={6}>
 				<Icon class="material-icons">search</Icon>
@@ -56,7 +45,8 @@
 	</LayoutGrid>
 </div>
 
-<CurrentWeather bind:getLocation bind:currentWeatherName bind:currentWeather />
+<CurrentWeather bind:getLocation bind:currentWeather />
+<Outlook />
 
 <style>
 	.container {
