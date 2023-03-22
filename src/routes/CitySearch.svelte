@@ -45,8 +45,14 @@
 	</LayoutGrid>
 </div>
 
-<CurrentWeather bind:getLocation bind:currentWeather />
-<Outlook />
+<LayoutGrid span={12}>
+	<Cell span={8}>
+		<CurrentWeather bind:getLocation bind:currentWeather />
+	</Cell>
+	<Cell spanDevices={{ desktop: 4, tablet: 8, phone: 4 }}>
+		<Outlook />
+	</Cell>
+</LayoutGrid>
 
 <style>
 	.container {
