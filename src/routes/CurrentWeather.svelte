@@ -1,6 +1,11 @@
 <script lang="ts">
-	import { PUBLIC_API_KEY as apiKey } from '$env/static/public';
-	import { degreeToCardinal, getWeather, forecast, unixToLocaleTime } from '../lib/helper';
+	import {
+		degreeToCardinal,
+		getWeather,
+		forecast,
+		unixToLocaleTime,
+		formatString
+	} from '../lib/helper';
 	import { onDestroy, onMount } from 'svelte';
 	import Cell from '@smui/layout-grid/src/Cell.svelte';
 	import LayoutGrid from '@smui/layout-grid/src/LayoutGrid.svelte';
@@ -11,7 +16,6 @@
 
 	let cityNameDefault: string = 'Warranwood';
 	let locationCoords: any = 'placeholder';
-	// export let forecast: any;
 	export let currentWeather: any;
 	let currentWeatherDescription: string;
 	let currentWeatherName: string;
@@ -38,7 +42,7 @@
 
 	function scheduleGetWeather() {
 		getWeatherTimeout = setTimeout(async () => {
-			await getWeather(); // Limited to 1000 calls per day
+			await getWeather(locationCoords.lat, locationCoords.lon); // Limited to 1000 calls per day
 			scheduleGetWeather();
 		}, 3600000); // One hour
 	}
@@ -52,31 +56,27 @@
 
 	async function getCurrentWeather() {
 		let res: any = await fetch(
-			`https://api.openweathermap.org/data/2.5/weather?lat=${locationCoords.lat}&lon=${locationCoords.lon}&units=metric&appid=${apiKey}`
+			// `http://192.168.0.205:8787/weather?lat=${locationCoords.lat}&lon=${locationCoords.lon}`
+			`https://weather-api-current.callumhopkins.au/weather?lat=${locationCoords.lat}&lon=${locationCoords.lon}`
+			// `https://openweathermap-currentweather.aeu117jk.workers.dev/weather?lat=${locationCoords.lat}&lon=${locationCoords.lon}`
 		);
 		let json: any = await res.json();
 		currentWeather = json;
-		currentWeatherDescription = await formatWeatherDescription();
+		currentWeatherDescription = formatString(currentWeather?.weather[0]?.description);
 		// console.log(currentWeather);
-	}
-
-	async function formatWeatherDescription() {
-		let currentWeatherDescription: string = await currentWeather?.weather[0]?.description;
-		let currentWeatherDescSplit = currentWeatherDescription.split(' ');
-		let currentWeatherDescCapitalized = currentWeatherDescSplit.map((word: any) => {
-			return word.charAt(0).toUpperCase() + word.slice(1);
-		});
-		return currentWeatherDescCapitalized.join('&nbsp;');
 	}
 
 	export async function getLocation(city: string) {
 		try {
+			locationCoords = '';
 			let res: any = await fetch(
-				`https://api.openweathermap.org/geo/1.0/direct?q=${city.toLowerCase()},AU&limit=1&appid=${apiKey}`
+				// `http://192.168.0.205:8787/geo?city=${city}`
+				`https://weather-api-geo.callumhopkins.au/geo?city=${city}`
+				// `https://openweathermap-geo.aeu117jk.workers.dev/geo?city=${city}`
 			);
 			let json: any = await res.json();
 			locationCoords = json[0];
-			await getWeather();
+			await getWeather(locationCoords.lat, locationCoords.lon);
 			getCurrentWeatherPromise = await getCurrentWeather();
 			return true;
 		} catch (error) {
@@ -90,20 +90,20 @@
 {:else if currentWeather && forecast}
 	<Paper variant="outlined">
 		<LayoutGrid>
-			<Cell spanDevices={{ desktop: 6, tablet: 6, phone: 4 }}>
+			<Cell spanDevices={{ desktop: 7, tablet: 6, phone: 4 }}>
 				<h2 class="shadow-text" style="margin-top: 0px; whitespace: nowrap;">
 					{currentWeatherName}
-					<h3 style="margin-top: 0px; display: inline; word-break: break-word;">
-						{@html currentWeatherDescription}
+					<h3 style="margin-top: 0px; display: inline;">
+						<br />{@html currentWeatherDescription}
 					</h3>
 					<h3 style="margin-bottom: 0px; margin-top: 10px;">
 						<b>{currentWeather.main.temp.toFixed(1)}&deg;</b>
 					</h3>
 				</h2>
 				<InnerGrid>
-					<Cell spanDevices={{ desktop: 6, tablet: 4, phone: 2 }}>
+					<Cell spanDevices={{ desktop: 7, tablet: 4, phone: 2 }}>
 						<h4>
-							Feels Like <br /> <b>{currentWeather.main.feels_like.toFixed(1)}&deg;</b>
+							Feels&nbsp;Like <br /> <b>{currentWeather.main.feels_like.toFixed(1)}&deg;</b>
 						</h4>
 					</Cell>
 					{#if past18Hundred}
@@ -113,13 +113,13 @@
 							</h4>
 						</Cell>
 					{:else}
-						<Cell spanDevices={{ desktop: 3, tablet: 2, phone: 1 }}>
+						<Cell spanDevices={{ desktop: 4, tablet: 2, phone: 1 }}>
 							<h4>
 								Max <b>{forecast?.daily[0].temp.max.toFixed(1)}&deg;</b>
 							</h4>
 						</Cell>
 					{/if}
-					<Cell spanDevices={{ desktop: 2, tablet: 2, phone: 1 }}>
+					<Cell spanDevices={{ desktop: 1, tablet: 2, phone: 1 }}>
 						<h4>
 							Min <b>{forecast?.daily[0].temp.min.toFixed(1)}&deg;</b>
 						</h4>
@@ -130,13 +130,14 @@
 	</Paper>
 	<Paper variant="outlined">
 		<LayoutGrid>
-			<Cell spanDevices={{ desktop: 4, tablet: 4, phone: 3 }} class="align-top">
+			<Cell spanDevices={{ desktop: 6, tablet: 4, phone: 4 }}>
 				{#if windSpeedTrue}
 					<h4>
 						Wind
 						<b>
-							{degreeToCardinal(currentWeather.wind.deg)}
-							{currentWeather.wind.speed.toFixed(0)}km/h
+							{degreeToCardinal(currentWeather.wind.deg)}&nbsp;{currentWeather.wind.speed.toFixed(
+								0
+							)}km/h
 							<br />
 						</b>
 						{#if currentWeather.wind.gust}
@@ -150,18 +151,18 @@
 					<h4>Wind <b>Calm</b></h4>
 				{/if}
 			</Cell>
-			<Cell>
+			<Cell spanDevices={{ desktop: 6, tablet: 4, phone: 4 }}>
 				<h4 style="margin-top: 0px; margin-bottom: 0px;">
-					Humidity <b>{currentWeather.main.humidity}%</b>
-					<br />
 					Pressure <b>{currentWeather.main.pressure}&nbsp;hPa</b>
+					<br />
+					Humidity&nbsp;<b>{currentWeather.main.humidity}%</b>
 				</h4>
 			</Cell>
 		</LayoutGrid>
 	</Paper>
 	<Paper variant="outlined">
 		<LayoutGrid>
-			<Cell class="align-top">
+			<Cell spanDevices={{ desktop: 12, tablet: 8, phone: 4 }}>
 				<h4>
 					Sunrise <b>{unixToLocaleTime(currentWeather.sys.sunrise)}</b>
 					<br />
@@ -177,16 +178,8 @@
 {/if}
 
 <style>
-	.shadow-text {
-		text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.274);
-	}
-
 	h4 {
 		margin-top: 0px;
 		margin-bottom: 0px;
-	}
-
-	* :global(.section) {
-		border: 1px solid red;
 	}
 </style>
