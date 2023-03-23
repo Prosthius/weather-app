@@ -90,7 +90,7 @@
 {#if locationCoords === undefined}
 	<h2>Error: Unknown location</h2>
 {:else if currentWeather && forecast}
-	<Paper variant="outlined">
+	<Paper style="margin-bottom: 10px;">
 		<LayoutGrid>
 			<Cell spanDevices={{ desktop: 7, tablet: 6, phone: 4 }}>
 				<h2 class="shadow-text" style="margin-top: 0px; whitespace: nowrap;">
@@ -130,7 +130,7 @@
 			</Cell>
 		</LayoutGrid>
 	</Paper>
-	<Paper variant="outlined">
+	<Paper>
 		<LayoutGrid>
 			<Cell spanDevices={{ desktop: 6, tablet: 4, phone: 4 }}>
 				{#if windSpeedTrue}
@@ -161,8 +161,6 @@
 				</h4>
 			</Cell>
 		</LayoutGrid>
-	</Paper>
-	<Paper variant="outlined">
 		<LayoutGrid>
 			<Cell spanDevices={{ desktop: 12, tablet: 8, phone: 4 }}>
 				<h4>
@@ -183,5 +181,9 @@
 	h4 {
 		margin-top: 0px;
 		margin-bottom: 0px;
+	}
+
+	div {
+		border: 2px solid var(--mdc-theme-secondary);
 	}
 </style>
