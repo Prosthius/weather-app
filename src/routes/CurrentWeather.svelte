@@ -12,7 +12,6 @@
 	import CircularProgress from '@smui/circular-progress';
 	import InnerGrid from '@smui/layout-grid/src/InnerGrid.svelte';
 	import Paper from '@smui/paper/src/Paper.svelte';
-	// import * as helper from '$lib';
 
 	let cityNameDefault: string = 'Warranwood';
 	let locationCoords: any = 'placeholder';
@@ -56,25 +55,18 @@
 
 	async function getCurrentWeather() {
 		let res: any = await fetch(
-			// `http://192.168.0.205:8787/weather?lat=${locationCoords.lat}&lon=${locationCoords.lon}`
-			// `https://weather-api-current.callumhopkins.au/weather?lat=${locationCoords.lat}&lon=${locationCoords.lon}`
 			`https://current.weather.callumhopkins.au/weather?lat=${locationCoords.lat}&lon=${locationCoords.lon}`
-			// `https://openweathermap-currentweather.aeu117jk.workers.dev/weather?lat=${locationCoords.lat}&lon=${locationCoords.lon}`
 		);
 		let json: any = await res.json();
 		currentWeather = json;
 		currentWeatherDescription = formatString(currentWeather?.weather[0]?.description);
-		// console.log(currentWeather);
 	}
 
 	export async function getLocation(city: string) {
 		try {
 			locationCoords = '';
 			let res: any = await fetch(
-				// `http://192.168.0.205:8787/geo?city=${city}`
-				// `https://weather-api-geo.callumhopkins.au/geo?city=${city}`
 				`https://geo.weather.callumhopkins.au/geo?city=${city}`
-				// `https://openweathermap-geo.aeu117jk.workers.dev/geo?city=${city}`
 			);
 			let json: any = await res.json();
 			locationCoords = json[0];
