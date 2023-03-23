@@ -83,7 +83,7 @@ export function formatString(input: string) {
 export let forecast: Forecast;
 export async function getWeather(lat: number, lon: number): Promise<Forecast> {
 	let res: any = await fetch(
-		`https://weather-api-forecast.callumhopkins.au/forecast?lat=${lat}&lon=${lon}`
+		`https://forecast.weather.callumhopkins.au/forecast?lat=${lat}&lon=${lon}`
 	);
 	let json: any = await res.json();
 	forecast = json;

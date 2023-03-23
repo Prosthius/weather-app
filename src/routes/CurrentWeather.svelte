@@ -55,7 +55,7 @@
 
 	async function getCurrentWeather() {
 		let res: any = await fetch(
-			`https://weather-api-current.callumhopkins.au/weather?lat=${locationCoords.lat}&lon=${locationCoords.lon}`
+			`https://current.weather.callumhopkins.au/weather?lat=${locationCoords.lat}&lon=${locationCoords.lon}`
 		);
 		let json: any = await res.json();
 		currentWeather = json;
@@ -66,7 +66,7 @@
 		try {
 			locationCoords = '';
 			let res: any = await fetch(
-				`https://weather-api-geo.callumhopkins.au/geo?city=${city}`
+				`https://geo.weather.callumhopkins.au/geo?city=${city}`
 			);
 			let json: any = await res.json();
 			locationCoords = json[0];
