@@ -1,6 +1,13 @@
 <script>
 	import CitySearch from './CitySearch.svelte';
-	import CurrentWeather from './CurrentWeather.svelte';
 </script>
 
-<CitySearch />
+<div>
+	<CitySearch />
+</div>
+
+<style>
+	/* div {
+		border: 2px solid var(--mdc-theme-secondary);
+	} */
+</style>
