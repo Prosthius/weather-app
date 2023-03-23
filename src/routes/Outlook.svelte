@@ -13,10 +13,11 @@
 	import Cell from '@smui/layout-grid/src/Cell.svelte';
 	import InnerGrid from '@smui/layout-grid/src/InnerGrid.svelte';
 	import Paper from '@smui/paper/src/Paper.svelte';
-	import IconButton, { Icon } from '@smui/fab';
+	import IconButton, { Icon } from '@smui/icon-button';
+	import CircularProgress from '@smui/circular-progress';
 
 	let forecastPromise: Promise<Forecast> = Promise.resolve(forecast);
-	let panelOpen: boolean = false;
+	let panelOpen: boolean[] = [false];
 
 	onMount(() => {
 		forecastPromise = new Promise((resolve) => {
@@ -32,15 +33,19 @@
 	});
 </script>
 
-<Paper variant="outlined">
-	<h2 class="shadow-text">Daily Forecast</h2>
-</Paper>
-{#await forecastPromise then forecast}
+{#await forecastPromise}
+	<div class="centred-horizontal" style="margin-top: 70px;">
+		<CircularProgress style="height: 100px; width: 100px" indeterminate />
+	</div>
+{:then forecast}
+	<Paper>
+		<h2 class="shadow-text">Daily Forecast</h2>
+	</Paper>
 	{#each forecast.daily as day, i}
 		{#if i > 0}
 			<div style="margin-top: 10px; margin-bottom: 10px;">
 				<Accordion>
-					<Panel bind:open={panelOpen}>
+					<Panel bind:open={panelOpen[i]}>
 						<Header>
 							{#if i === 1}
 								<h5>
@@ -55,10 +60,10 @@
 									{unixToLocaleDate(Number(day.dt))}
 								</h5>
 							{/if}
-							<!-- <IconButton slot="icon" toggle pressed={panelOpen}>
+							<IconButton slot="icon" toggle pressed={panelOpen[i]}>
 								<Icon class="material-icons" on>expand_less</Icon>
 								<Icon class="material-icons">expand_more</Icon>
-							</IconButton> -->
+							</IconButton>
 						</Header>
 						<Content style="margin: 0; padding: 0;">
 							<div class="main-body">
@@ -118,7 +123,7 @@
 	}
 
 	h2 {
-		margin-top: 30px;
+		margin: 30px 0px;
 	}
 
 	.main-body {
