@@ -13,11 +13,11 @@
 	import Cell from '@smui/layout-grid/src/Cell.svelte';
 	import InnerGrid from '@smui/layout-grid/src/InnerGrid.svelte';
 	import Paper from '@smui/paper/src/Paper.svelte';
-	import IconButton, { Icon } from '@smui/fab';
+	import IconButton, { Icon } from '@smui/icon-button';
 	import CircularProgress from '@smui/circular-progress';
 
 	let forecastPromise: Promise<Forecast> = Promise.resolve(forecast);
-	let panelOpen: boolean = false;
+	let panelOpen: boolean[] = [false];
 
 	onMount(() => {
 		forecastPromise = new Promise((resolve) => {
@@ -45,7 +45,7 @@
 		{#if i > 0}
 			<div style="margin-top: 10px; margin-bottom: 10px;">
 				<Accordion>
-					<Panel bind:open={panelOpen}>
+					<Panel bind:open={panelOpen[i]}>
 						<Header>
 							{#if i === 1}
 								<h5>
@@ -60,7 +60,7 @@
 									{unixToLocaleDate(Number(day.dt))}
 								</h5>
 							{/if}
-							<IconButton slot="icon" toggle pressed={panelOpen}>
+							<IconButton slot="icon" toggle pressed={panelOpen[i]}>
 								<Icon class="material-icons" on>expand_less</Icon>
 								<Icon class="material-icons">expand_more</Icon>
 							</IconButton>
