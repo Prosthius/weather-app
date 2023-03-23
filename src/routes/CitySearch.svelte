@@ -57,8 +57,6 @@
 <style>
 	.container {
 		padding: 36px 18px;
-		background-color: var(--mdc-theme-background, #f8f8f8);
-		border: 1px solid var(--mdc-theme-text-hint-on-background, rgba(0, 0, 0, 0.1));
 	}
 	* :global(.solo-paper) {
 		display: flex;
@@ -73,19 +71,14 @@
 		display: inline-block;
 		margin: 0 12px;
 	}
-	* :global(.solo-input) {
-		flex-grow: 1;
-		color: var(--mdc-theme-on-surface, #000);
+	* :global(input) {
+		color: var(--mdc-theme-on-surface);
 	}
-	* :global(.solo-input::placeholder) {
-		color: var(--mdc-theme-on-surface, #000);
+	* :global(Input::placeholder) {
+		color: var(--mdc-theme-on-surface);
 		opacity: 0.6;
 	}
 	* :global(.solo-fab) {
 		flex-shrink: 0;
-	}
-	* :global(.align-left) {
-		display: flex;
-		justify-content: flex-start;
 	}
 </style>
