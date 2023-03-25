@@ -66,7 +66,7 @@
 	}
 </script>
 
-<Paper style="padding: 21px 20px;">
+<Paper style="padding: 21px 20px; margin-bottom: 11px;">
 	<h2 class="shadow-text">Daily Forecast</h2>
 </Paper>
 
