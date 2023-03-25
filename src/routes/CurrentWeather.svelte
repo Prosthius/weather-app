@@ -14,7 +14,7 @@
 	import InnerGrid from '@smui/layout-grid/src/InnerGrid.svelte';
 	import Paper from '@smui/paper/src/Paper.svelte';
 
-	let cityNameDefault: string = 'Warranwood';
+	let cityNameDefault: string = 'Melbourne';
 	let locationCoords: any = 'placeholder';
 	export let currentWeather: any;
 	let currentWeatherDescription: string;
