@@ -6,7 +6,7 @@
 	import LayoutGrid from '@smui/layout-grid/src/LayoutGrid.svelte';
 	import Cell from '@smui/layout-grid/src/Cell.svelte';
 	import Fab from '@smui/fab/src/Fab.svelte';
-	import Outlook from './Outlook.svelte';
+	import Outlook from './Forecast.svelte';
 
 	let cityNameInput: string;
 	let cityNameSaved: string;
@@ -26,19 +26,19 @@
 	}
 </script>
 
-<div class="container" style="padding: 0px;">
+<div class="container">
 	<LayoutGrid>
 		<Cell span={12} class="centre">
-			<Paper class="solo-paper" elevation={6}>
+			<Paper class="paper" elevation={6}>
 				<Icon class="material-icons">search</Icon>
 				<Input
 					bind:value={cityNameInput}
 					on:keydown={handleSearchEnterPress}
 					placeholder="Search for a Suburb or City"
-					class="solo-input"
+					class="input"
 				/>
 			</Paper>
-			<Fab on:click={updateLocation} color="primary" mini class="solo-fab">
+			<Fab on:click={updateLocation} color="primary" mini class="fab">
 				<Icon class="material-icons">arrow_forward</Icon>
 			</Fab>
 		</Cell>
@@ -46,19 +46,19 @@
 </div>
 
 <LayoutGrid span={12}>
-	<Cell span={8}>
+	<Cell spanDevices={{ desktop: 7, tablet: 8, phone: 4 }}>
 		<CurrentWeather bind:getLocation bind:currentWeather />
 	</Cell>
-	<Cell spanDevices={{ desktop: 4, tablet: 8, phone: 4 }}>
+	<Cell spanDevices={{ desktop: 5, tablet: 8, phone: 4 }}>
 		<Outlook />
 	</Cell>
 </LayoutGrid>
 
 <style>
 	.container {
-		padding: 36px 18px;
+		padding: 15px 0px 0px 0px;
 	}
-	* :global(.solo-paper) {
+	* :global(.paper) {
 		display: flex;
 		align-items: center;
 		flex-grow: 1;
@@ -67,9 +67,9 @@
 		padding: 0 12px;
 		height: 48px;
 	}
-	* :global(.solo-paper > *) {
+	* :global(.paper > *) {
 		display: inline-block;
-		margin: 0 12px;
+		margin: 0 7px;
 	}
 	* :global(input) {
 		color: var(--mdc-theme-on-surface);
@@ -78,7 +78,7 @@
 		color: var(--mdc-theme-on-surface);
 		opacity: 0.6;
 	}
-	* :global(.solo-fab) {
+	* :global(.fab) {
 		flex-shrink: 0;
 	}
 </style>
