@@ -1,11 +1,12 @@
 <script lang="ts">
 	import {
 		degreeToCardinal,
-		getWeather,
+		getForecast,
 		forecast,
 		unixToLocaleTime,
 		formatString
 	} from '../lib/helper';
+	import type { Forecast } from '../lib/interfaces';
 	import { onDestroy, onMount } from 'svelte';
 	import Cell from '@smui/layout-grid/src/Cell.svelte';
 	import LayoutGrid from '@smui/layout-grid/src/LayoutGrid.svelte';
@@ -25,11 +26,14 @@
 	$: windSpeedTrue = windSpeed > 0 ? true : false;
 	let hour: number;
 	$: past18Hundred = hour >= 18 ? true : false;
-	let getLocationPromise: any;
-	let getCurrentWeatherPromise: any;
+	let currentForecast: Forecast;
+
+	const unsubscribe = forecast.subscribe((value) => {
+		currentForecast = value;
+	});
 
 	onMount(async () => {
-		getLocationPromise = await getLocation(cityNameDefault);
+		await getLocation(cityNameDefault);
 		scheduleGetWeather();
 		scheduleWeatherUpdate();
 	});
@@ -37,11 +41,13 @@
 	onDestroy(() => {
 		clearTimeout(timeout);
 		clearTimeout(getWeatherTimeout);
+		unsubscribe();
 	});
 
 	function scheduleGetWeather() {
 		getWeatherTimeout = setTimeout(async () => {
-			await getWeather(locationCoords.lat, locationCoords.lon); // Limited to 1000 calls per day
+			await getForecast(locationCoords.lat, locationCoords.lon); // Limited to 1000 calls per day
+			console.log(forecast);
 			scheduleGetWeather();
 		}, 3600000); // One hour
 	}
@@ -65,13 +71,19 @@
 	export async function getLocation(city: string) {
 		try {
 			locationCoords = '';
-			let res: any = await fetch(
-				`https://geo.weather.callumhopkins.au/geo?city=${city}`
-			);
+			forecast.set({
+				lat: 0,
+				lon: 0,
+				timezone: '',
+				timezone_offset: 0,
+				daily: []
+			});
+			let res: any = await fetch(`https://geo.weather.callumhopkins.au/geo?city=${city}`);
 			let json: any = await res.json();
 			locationCoords = json[0];
-			await getWeather(locationCoords.lat, locationCoords.lon);
-			getCurrentWeatherPromise = await getCurrentWeather();
+
+			await getForecast(locationCoords.lat, locationCoords.lon);
+			await getCurrentWeather();
 			return true;
 		} catch (error) {
 			console.log(error);
@@ -79,15 +91,19 @@
 	}
 </script>
 
+<Paper style="padding: 1px 20px; margin: 0px 0px 10px 0px;">
+	<h2 class="shadow-text">Current Weather</h2>
+</Paper>
+
 {#if locationCoords === undefined}
 	<h2>Error: Unknown location</h2>
 {:else if currentWeather && forecast}
-	<Paper style="margin-bottom: 10px;">
+	<Paper style="margin-bottom: 10px; padding: 20px 0px;">
 		<LayoutGrid>
 			<Cell spanDevices={{ desktop: 7, tablet: 6, phone: 4 }}>
-				<h2 class="shadow-text" style="margin-top: 0px; whitespace: nowrap;">
+				<h2 class="shadow-text current-weather-name" style="margin-top: 0px; whitespace: nowrap;">
 					{currentWeatherName}
-					<h3 style="margin-top: 0px; display: inline;">
+					<h3 class="weather-description">
 						<br />{@html currentWeatherDescription}
 					</h3>
 					<h3 style="margin-bottom: 0px; margin-top: 10px;">
@@ -103,26 +119,26 @@
 					{#if past18Hundred}
 						<Cell spanDevices={{ desktop: 4, tablet: 3, phone: 1 }}>
 							<h4>
-								Max Tomorrow <b>{forecast?.daily[1].temp.max.toFixed(1)}&deg;</b>
+								Max Tomorrow <b>{currentForecast?.daily[1].temp.max.toFixed(1)}&deg;</b>
 							</h4>
 						</Cell>
 					{:else}
 						<Cell spanDevices={{ desktop: 4, tablet: 2, phone: 1 }}>
 							<h4>
-								Max <b>{forecast?.daily[0].temp.max.toFixed(1)}&deg;</b>
+								Max <b>{currentForecast?.daily[0].temp.max.toFixed(1)}&deg;</b>
 							</h4>
 						</Cell>
 					{/if}
 					<Cell spanDevices={{ desktop: 1, tablet: 2, phone: 1 }}>
 						<h4>
-							Min <b>{forecast?.daily[0].temp.min.toFixed(1)}&deg;</b>
+							Min <b>{currentForecast?.daily[0].temp.min.toFixed(1)}&deg;</b>
 						</h4>
 					</Cell>
 				</InnerGrid>
 			</Cell>
 		</LayoutGrid>
 	</Paper>
-	<Paper>
+	<Paper style="margin-bottom: 10px; padding: 20px 0px;">
 		<LayoutGrid>
 			<Cell spanDevices={{ desktop: 6, tablet: 4, phone: 4 }}>
 				{#if windSpeedTrue}
@@ -177,5 +193,15 @@
 
 	div {
 		border: 2px solid var(--mdc-theme-secondary);
+	}
+
+	.weather-description {
+		margin-top: 0px;
+		display: inline;
+		font-size: 2.5rem;
+	}
+
+	.current-weather-name {
+		font-weight: 400;
 	}
 </style>
