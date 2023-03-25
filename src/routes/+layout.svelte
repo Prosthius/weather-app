@@ -50,3 +50,9 @@
 </TopAppBar>
 
 <slot />
+
+<style>
+	h4 {
+		padding-left: 10px;
+	}
+</style>
