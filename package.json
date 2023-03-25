@@ -51,7 +51,10 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@fortawesome/free-solid-svg-icons": "^6.3.0",
+		"@fortawesome/svelte-fontawesome": "^0.2.0",
 		"@material/dom": "^14.0.0",
+		"svelte-awesome": "^3.2.0",
 		"wrangler": "^2.13.0"
 	}
 }
