@@ -28,7 +28,7 @@
 <TopAppBar variant="static">
 	<Row>
 		<Section>
-			<h4>Weather</h4>
+			<h4>Australian Weather</h4>
 		</Section>
 		<Section align="end" toolbar>
 			<Wrapper>
