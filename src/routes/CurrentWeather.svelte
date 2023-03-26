@@ -15,7 +15,7 @@
 	import InnerGrid from '@smui/layout-grid/src/InnerGrid.svelte';
 	import Paper from '@smui/paper/src/Paper.svelte';
 	import type { Unsubscriber } from 'svelte/store';
-
+	
 	let cityNameDefault: string = 'Melbourne';
 	let locationCoords: LocationCoords;
 	export let currentWeather: any;
@@ -26,7 +26,7 @@
 	let getWeatherTimeout: any;
 	$: windSpeed = currentWeather?.wind?.speed.toFixed(0);
 	$: windSpeedTrue = windSpeed > 0 ? true : false;
-	let hour: number;
+	let hour: number = new Date().getHours();
 	$: past18Hundred = hour >= 18 ? true : false;
 	let currentForecast: Forecast;
 	let promptPromise: Promise<void> = new Promise<void>((resolve, reject) => {});
@@ -34,12 +34,11 @@
 	let unsubscribe: Unsubscriber = forecast.subscribe((value: Forecast) => {
 		currentForecast = value;
 	});
-	
+
 	onMount(() => {
 		promptPromise = promptLocation();
 		scheduleGetWeather();
 		scheduleWeatherUpdate();
-		// await getLocation(cityNameDefault);
 	});
 
 	onDestroy(() => {
@@ -60,6 +59,7 @@
 		timeout = setTimeout(async () => {
 			await getCurrentWeather();
 			scheduleWeatherUpdate();
+			hour = new Date().getHours();
 		}, 60000);
 	}
 
@@ -99,7 +99,7 @@
 
 	async function promptLocation(): Promise<void> {
 		try {
-			const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+			const position: GeolocationPosition = await new Promise<GeolocationPosition>((resolve, reject) => {
 				navigator.geolocation.getCurrentPosition(resolve, reject);
 			});
 			locationCoords = {
@@ -117,7 +117,6 @@
 			await getLocation(cityNameDefault);
 			await getForecast(locationCoords.lat, locationCoords.lon);
 			await getCurrentWeather();
-			throw error;
 		}
 	}
 </script>
@@ -153,7 +152,7 @@
 							</h4>
 						</Cell>
 						{#if past18Hundred}
-							<Cell spanDevices={{ desktop: 4, tablet: 3, phone: 1 }}>
+							<Cell spanDevices={{ desktop: 4, tablet: 2, phone: 1 }}>
 								<h4>
 									Max Tomorrow <b>{currentForecast?.daily[1].temp.max.toFixed(1)}&deg;</b>
 								</h4>
@@ -166,7 +165,7 @@
 							</Cell>
 						{/if}
 						<Cell spanDevices={{ desktop: 1, tablet: 2, phone: 1 }}>
-							<h4>
+							<h4 style="margin-left: 10px;">
 								Min <b>{currentForecast?.daily[0].temp.min.toFixed(1)}&deg;</b>
 							</h4>
 						</Cell>
