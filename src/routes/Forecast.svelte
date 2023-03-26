@@ -6,7 +6,7 @@
 		formatString,
 		degreeToCardinal
 	} from '../lib/helper';
-	import type { Forecast } from '../lib/interfaces';
+	import type { Forecast } from '../lib/interfaces/Forecast';
 	import { onDestroy, onMount } from 'svelte';
 	import Accordion, { Panel, Header, Content } from '@smui-extra/accordion';
 	import LayoutGrid from '@smui/layout-grid/src/LayoutGrid.svelte';
@@ -70,7 +70,7 @@
 	<h2 class="shadow-text">Daily Forecast</h2>
 </Paper>
 
-{#if currentForecast.daily.length === 0}
+{#if currentForecast.daily.length < 1}
 	<div class="centred-horizontal" style="margin-top: 70px;">
 		<CircularProgress style="height: 100px; width: 100px" indeterminate />
 	</div>
