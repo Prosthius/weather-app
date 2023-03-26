@@ -1,22 +1,22 @@
 import { writable } from 'svelte/store';
-import type { Forecast } from './interfaces';
+import type { Forecast } from './interfaces/Forecast';
 
-export function unixToLocaleTime(unixUTC: number) {
+export function unixToLocaleTime(unixUTC: number): string {
 	let date = new Date(unixUTC * 1000);
 	return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 }
 
-export function unixToLocaleDay(unixUTC: number) {
+export function unixToLocaleDay(unixUTC: number): string {
 	let date = new Date(unixUTC * 1000);
 	return date.toLocaleDateString(undefined, { weekday: 'long' });
 }
 
-export function unixToLocaleDate(unixUTC: number) {
+export function unixToLocaleDate(unixUTC: number): string {
 	let date = new Date(unixUTC * 1000);
 	return date.toLocaleDateString(undefined, { day: 'numeric', month: 'long' });
 }
 
-export function degreeToCardinal(degree: number) {
+export function degreeToCardinal(degree: number): string {
 	let cardinal;
 	switch (true) {
 		case degree >= 348.75 || degree < 11.25:
@@ -74,7 +74,7 @@ export function degreeToCardinal(degree: number) {
 }
 
 // Capitalises the first letter of each word and adds a non-breaking space between words 0+1, 2+3 etc.
-export function formatString(input: string) {
+export function formatString(input: string): string {
 	let split: string[] = input.split(' ');
 	let formatted: string = '';
 	for (let i: number = 0; i < split.length; i++) {
@@ -103,7 +103,7 @@ export async function getForecast(lat: number, lon: number): Promise<void> {
 	forecast.set(json);
 }
 
-let forecasts = {
+let forecastDummyData: Forecast = {
 	"lat": -37.7725,
 	"lon": 145.2502,
 	"timezone": "Australia/Melbourne",
