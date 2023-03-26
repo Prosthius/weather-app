@@ -2,22 +2,22 @@ import { writable } from 'svelte/store';
 import type { Forecast } from './interfaces/Forecast';
 
 export function unixToLocaleTime(unixUTC: number): string {
-	let date = new Date(unixUTC * 1000);
+	let date: Date = new Date(unixUTC * 1000);
 	return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 }
 
 export function unixToLocaleDay(unixUTC: number): string {
-	let date = new Date(unixUTC * 1000);
+	let date: Date = new Date(unixUTC * 1000);
 	return date.toLocaleDateString(undefined, { weekday: 'long' });
 }
 
 export function unixToLocaleDate(unixUTC: number): string {
-	let date = new Date(unixUTC * 1000);
+	let date: Date = new Date(unixUTC * 1000);
 	return date.toLocaleDateString(undefined, { day: 'numeric', month: 'long' });
 }
 
 export function degreeToCardinal(degree: number): string {
-	let cardinal;
+	let cardinal: string;
 	switch (true) {
 		case degree >= 348.75 || degree < 11.25:
 			cardinal = 'N';
@@ -96,7 +96,7 @@ export let forecast = writable<Forecast>({
 });
 
 export async function getForecast(lat: number, lon: number): Promise<void> {
-	let res: any = await fetch(
+	let res: Response = await fetch(
 		`https://forecast.weather.callumhopkins.au/forecast?lat=${lat}&lon=${lon}`
 	);
 	let json: Forecast = await res.json();
