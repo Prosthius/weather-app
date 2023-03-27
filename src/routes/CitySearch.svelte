@@ -1,26 +1,24 @@
 <script lang="ts">
 	import CurrentWeather from './CurrentWeather.svelte';
 	import { Icon } from '@smui/fab';
-	import Textfield, { Input } from '@smui/textfield';
+	import { Input } from '@smui/textfield';
 	import Paper from '@smui/paper';
 	import LayoutGrid from '@smui/layout-grid/src/LayoutGrid.svelte';
 	import Cell from '@smui/layout-grid/src/Cell.svelte';
 	import Fab from '@smui/fab/src/Fab.svelte';
-	import Outlook from './Forecast.svelte';
+	import Forecast from './Forecast.svelte';
 
 	let cityNameInput: string;
 	let cityNameSaved: string;
 	let getLocation: any;
-	let currentWeather: any;
 
-	function updateLocation() {
+	async function updateLocation(): Promise<void> {
 		cityNameSaved = cityNameInput;
-		currentWeather = '';
 		cityNameInput = '';
 		getLocation(cityNameSaved);
 	}
 
-	function handleSearchEnterPress(event: CustomEvent | KeyboardEvent) {
+	function handleSearchEnterPress(event: CustomEvent | KeyboardEvent): void {
 		event = event as KeyboardEvent;
 		event.key === 'Enter' ? updateLocation() : null;
 	}
@@ -47,10 +45,10 @@
 
 <LayoutGrid span={12}>
 	<Cell spanDevices={{ desktop: 7, tablet: 8, phone: 4 }}>
-		<CurrentWeather bind:getLocation bind:currentWeather />
+		<CurrentWeather bind:getLocation />
 	</Cell>
 	<Cell spanDevices={{ desktop: 5, tablet: 8, phone: 4 }}>
-		<Outlook />
+		<Forecast />
 	</Cell>
 </LayoutGrid>
 
