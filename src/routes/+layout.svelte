@@ -27,8 +27,11 @@
 
 <TopAppBar variant="static">
 	<Row>
+		<Section style="max-width: 300px;">
+			<a href="/"><h4>Australian Weather</h4></a>
+		</Section>
 		<Section>
-			<h4>Australian Weather</h4>
+			<a href="./radar" class="page"><h5>Radar</h5></a>
 		</Section>
 		<Section align="end" toolbar>
 			<Wrapper>
@@ -54,5 +57,14 @@
 <style>
 	h4 {
 		padding-left: 10px;
+	}
+
+	a {
+		text-decoration: none;
+		color: inherit;
+	}
+
+	a.page {
+		transform: translateY(3px);
 	}
 </style>
