@@ -1,23 +1,74 @@
 import { writable } from 'svelte/store';
-import type { Forecast } from './interfaces';
+import type { Writable } from 'svelte/store';
+import type { Forecast } from './interfaces/Forecast';
+import type { CurrentWeather } from './interfaces/CurrentWeather';
 
-export function unixToLocaleTime(unixUTC: number) {
-	let date = new Date(unixUTC * 1000);
+const mockForecast: Forecast = {
+	lat: 0,
+	lon: 0,
+	timezone: '',
+	timezone_offset: 0,
+	daily: []
+};
+
+export const mockCurrentWeather: CurrentWeather = {
+	coord: {
+		lon: 0,
+		lat: 0,
+	},
+	weather: [{
+		id: 0,
+		main: '',
+		description: '',
+		icon: '',
+	}],
+	base: '',
+	main: {
+		temp: 0,
+		feels_like: 0,
+		temp_min: 0,
+		temp_max: 0,
+		pressure: 0,
+		humidity: 0,
+	},
+	wind: {
+		speed: 0,
+		deg: 0,
+	},
+	clouds: {
+		all: 0,
+	},
+	dt: 0,
+	sys: {
+		type: 0,
+		id: 0,
+		country: '',
+		sunrise: 0,
+		sunset: 0,
+	},
+	timezone: 0,
+	id: 0,
+	name: '',
+	cod: 0,
+};
+
+export function unixToLocaleTime(unixUTC: number): string {
+	let date: Date = new Date(unixUTC * 1000);
 	return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 }
 
-export function unixToLocaleDay(unixUTC: number) {
-	let date = new Date(unixUTC * 1000);
+export function unixToLocaleDay(unixUTC: number): string {
+	let date: Date = new Date(unixUTC * 1000);
 	return date.toLocaleDateString(undefined, { weekday: 'long' });
 }
 
-export function unixToLocaleDate(unixUTC: number) {
-	let date = new Date(unixUTC * 1000);
+export function unixToLocaleDate(unixUTC: number): string {
+	let date: Date = new Date(unixUTC * 1000);
 	return date.toLocaleDateString(undefined, { day: 'numeric', month: 'long' });
 }
 
-export function degreeToCardinal(degree: number) {
-	let cardinal;
+export function degreeToCardinal(degree: number): string {
+	let cardinal: string;
 	switch (true) {
 		case degree >= 348.75 || degree < 11.25:
 			cardinal = 'N';
@@ -74,7 +125,7 @@ export function degreeToCardinal(degree: number) {
 }
 
 // Capitalises the first letter of each word and adds a non-breaking space between words 0+1, 2+3 etc.
-export function formatString(input: string) {
+export function formatString(input: string): string {
 	let split: string[] = input.split(' ');
 	let formatted: string = '';
 	for (let i: number = 0; i < split.length; i++) {
@@ -87,23 +138,28 @@ export function formatString(input: string) {
 	return formatted.trim();
 }
 
-export let forecast = writable<Forecast>({
-	lat: 0,
-	lon: 0,
-	timezone: '',
-	timezone_offset: 0,
-	daily: []
-});
+export let forecast: Writable<Forecast> = writable<Forecast>(mockForecast);
 
 export async function getForecast(lat: number, lon: number): Promise<void> {
-	let res: any = await fetch(
+	let res: Response = await fetch(
 		`https://forecast.weather.callumhopkins.au/forecast?lat=${lat}&lon=${lon}`
 	);
 	let json: Forecast = await res.json();
 	forecast.set(json);
 }
 
-let forecasts = {
+export let currentWeather: Writable<CurrentWeather> = writable<CurrentWeather>(mockCurrentWeather);
+
+export async function getCurrentWeather(lat: number, lon: number): Promise<void> {
+	currentWeather.set(mockCurrentWeather);
+	let res: Response = await fetch(
+		`https://current.weather.callumhopkins.au/weather?lat=${lat}&lon=${lon}`
+	);
+	let json: CurrentWeather = await res.json();
+	currentWeather.set(json);
+}
+
+let forecastDummyData: Forecast = {
 	"lat": -37.7725,
 	"lon": 145.2502,
 	"timezone": "Australia/Melbourne",
