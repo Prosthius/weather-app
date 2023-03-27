@@ -24,11 +24,12 @@
 	import { faCloudShowersHeavy } from '@fortawesome/free-solid-svg-icons/faCloudShowersHeavy';
 	import { faCloudBolt } from '@fortawesome/free-solid-svg-icons/faCloudBolt';
 	import { faCloud } from '@fortawesome/free-solid-svg-icons/faCloud';
+	import type { Unsubscriber } from 'svelte/store';
 
 	let panelOpen: boolean[] = [false];
 	let currentForecast: Forecast;
 
-	const unsubscribe = forecast.subscribe((value) => {
+	const unsubscribe: Unsubscriber = forecast.subscribe((value: Forecast) => {
 		currentForecast = value;
 	});
 
