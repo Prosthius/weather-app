@@ -1,16 +1,19 @@
 <script lang="ts">
 	import {
 		degreeToCardinal,
-		getForecast,
-		forecast,
 		unixToLocaleTime,
 		formatString,
+	} from '$lib/helper';
+	import { 
+		getForecast,
+		forecast,
 		getCurrentWeather,
-		currentWeather
-	} from '../lib/helper';
-	import type { Forecast } from '../lib/interfaces/Forecast';
-	import type { LocationCoords } from '../lib/interfaces/LocationCoords';
-	import type { CurrentWeather } from '../lib/interfaces/CurrentWeather';
+		currentWeather,
+		locationCoords
+	} from '$lib/apiCalls';
+	import type { Forecast } from '$lib/interfaces/Forecast';
+	import type { LocationCoords } from '$lib/interfaces/LocationCoords';
+	import type { CurrentWeather } from '$lib/interfaces/CurrentWeather';
 	import { onDestroy, onMount } from 'svelte';
 	import Cell from '@smui/layout-grid/src/Cell.svelte';
 	import LayoutGrid from '@smui/layout-grid/src/LayoutGrid.svelte';
@@ -20,7 +23,7 @@
 	import type { Unsubscriber } from 'svelte/store';
 
 	let cityNameDefault: string = 'Melbourne';
-	let locationCoords: LocationCoords;
+	let locationCoordsLocal: LocationCoords;
 	let currentWeatherLocal: CurrentWeather;
 	$: currentWeatherDescription = formatString(currentWeatherLocal?.weather[0]?.description);
 	$: currentWeatherName = currentWeatherLocal?.name;
@@ -41,6 +44,10 @@
 		currentWeatherLocal = value;
 	});
 
+	let locationCoordsUnsubscribe: Unsubscriber = locationCoords.subscribe((value: LocationCoords) => {
+		locationCoordsLocal = value;
+	});
+
 	onMount(() => {
 		promptPromise = promptLocation();
 		scheduleGetWeather();
@@ -52,11 +59,12 @@
 		clearTimeout(getWeatherTimeout);
 		forecastUnsubscribe();
 		weatherUnsubscribe();
+		locationCoordsUnsubscribe();
 	});
 
 	function scheduleGetWeather() {
 		getWeatherTimeout = setTimeout(async () => {
-			await getForecast(locationCoords.lat, locationCoords.lon); // Limited to 1000 calls per day
+			await getForecast(locationCoordsLocal.lat, locationCoordsLocal.lon); // Limited to 1000 calls per day
 			console.log(forecast);
 			scheduleGetWeather();
 		}, 3600000); // One hour
@@ -64,7 +72,7 @@
 
 	function scheduleWeatherUpdate() {
 		weatherUpdateTimeout = setTimeout(async () => {
-			await getCurrentWeather(locationCoords.lat, locationCoords.lon);
+			await getCurrentWeather(locationCoordsLocal.lat, locationCoordsLocal.lon);
 			scheduleWeatherUpdate();
 			hour = new Date().getHours();
 		}, 60000);
@@ -72,7 +80,7 @@
 
 	export async function getLocation(city: string): Promise<void> {
 		try {
-			locationCoords = {
+			locationCoordsLocal = {
 				lat: 0,
 				lon: 0
 			};
@@ -85,10 +93,11 @@
 			});
 			let res: any = await fetch(`https://geo.weather.callumhopkins.au/geo?city=${city}`);
 			let json: any = await res.json();
-			locationCoords = json[0];
+			locationCoordsLocal = json[0];
+			locationCoords.set(locationCoordsLocal);
 
-			await getForecast(locationCoords.lat, locationCoords.lon);
-			await getCurrentWeather(locationCoords.lat, locationCoords.lon);
+			await getForecast(locationCoordsLocal.lat, locationCoordsLocal.lon);
+			await getCurrentWeather(locationCoordsLocal.lat, locationCoordsLocal.lon);
 		} catch (error) {
 			console.log(error);
 		}
@@ -101,21 +110,21 @@
 					navigator.geolocation.getCurrentPosition(resolve, reject);
 				}
 			);
-			locationCoords = {
+			locationCoordsLocal = {
 				lat: position.coords.latitude,
 				lon: position.coords.longitude
 			};
 			await getForecast(position.coords.latitude, position.coords.longitude);
-			await getCurrentWeather(locationCoords.lat, locationCoords.lon);
+			await getCurrentWeather(locationCoordsLocal.lat, locationCoordsLocal.lon);
 		} catch (error) {
 			console.error(error);
-			locationCoords = {
+			locationCoordsLocal = {
 				lat: 0,
 				lon: 0
 			};
 			await getLocation(cityNameDefault);
-			await getForecast(locationCoords.lat, locationCoords.lon);
-			await getCurrentWeather(locationCoords.lat, locationCoords.lon);
+			await getForecast(locationCoordsLocal.lat, locationCoordsLocal.lon);
+			await getCurrentWeather(locationCoordsLocal.lat, locationCoordsLocal.lon);
 		}
 	}
 </script>
