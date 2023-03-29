@@ -32,6 +32,7 @@
 		"@sveltejs/kit": "^1.11.0",
 		"@tsconfig/svelte": "^3.0.0",
 		"@types/dotenv": "^8.2.0",
+		"@types/leaflet": "^1.9.3",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
 		"dotenv": "^16.0.3",
@@ -55,6 +56,7 @@
 		"@fortawesome/svelte-fontawesome": "^0.2.0",
 		"@material/dom": "^14.0.0",
 		"@vitejs/plugin-basic-ssl": "^1.0.1",
+		"leaflet": "^1.9.3",
 		"svelte-awesome": "^3.2.0",
 		"wrangler": "^2.13.0"
 	}
