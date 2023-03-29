@@ -2,11 +2,11 @@
 	import {
 		unixToLocaleDay,
 		unixToLocaleDate,
-		forecast,
 		formatString,
 		degreeToCardinal
-	} from '../lib/helper';
-	import type { Forecast } from '../lib/interfaces/Forecast';
+	} from '$lib/helper';
+	import { forecast } from '$lib/apiCalls'
+	import type { Forecast } from '$lib/interfaces/Forecast';
 	import { onDestroy, onMount } from 'svelte';
 	import Accordion, { Panel, Header, Content } from '@smui-extra/accordion';
 	import LayoutGrid from '@smui/layout-grid/src/LayoutGrid.svelte';
