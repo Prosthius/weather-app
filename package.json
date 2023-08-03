@@ -56,6 +56,6 @@
 		"@material/dom": "^14.0.0",
 		"@vitejs/plugin-basic-ssl": "^1.0.1",
 		"svelte-awesome": "^3.2.0",
-		"wrangler": "^2.13.0"
+		"wrangler": "^3.1.1"
 	}
 }
